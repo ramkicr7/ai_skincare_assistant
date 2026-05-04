@@ -8,6 +8,9 @@ export default function App() {
   const [input, setInput] = useState("");
   const [age, setAge] = useState("");
 
+  // ✅ API URL (CHANGE HERE IF NEEDED)
+  const API = import.meta.env.VITE_API_URL || "https://ai-skincare-assistant-1-v6n1.onrender.com";
+
   useEffect(() => {
     setTimeout(() => setLoading(false), 2500);
   }, []);
@@ -16,26 +19,29 @@ export default function App() {
     if (!input) return;
 
     try {
-      // STEP 1: Analyze
-      const res = await axios.post("http://127.0.0.1:8000/analyze", {
+      console.log("Sending request to:", API);
+
+      // 🔥 STEP 1: Analyze
+      const res = await axios.post(`${API}/analyze`, {
         text: input,
       });
 
+      console.log("ANALYZE RESPONSE:", res.data);
+
       const structured = res.data;
 
-      // STEP 2: Recommend
-      const rec = await axios.post(
-        "http://127.0.0.1:8000/recommend",
-        structured
-      );
+      // 🔥 STEP 2: Recommend
+      const rec = await axios.post(`${API}/recommend`, structured);
 
-      // STEP 3: Display result
+      console.log("RECOMMEND RESPONSE:", rec.data);
+
+      // 🔥 STEP 3: Display result
       setMessages((prev) => [
         ...prev,
         { role: "user", text: input },
         {
           role: "bot",
-          data: rec.data, // ✅ FIXED
+          data: rec.data,
         },
       ]);
 
@@ -43,6 +49,20 @@ export default function App() {
 
     } catch (error) {
       console.error("ERROR:", error);
+
+      setMessages((prev) => [
+        ...prev,
+        { role: "user", text: input },
+        {
+          role: "bot",
+          data: {
+            sunscreen: "Error fetching recommendation",
+            spf: "Check backend connection",
+            ingredients: ["API issue"],
+            routine: ["Fix API URL / CORS"],
+          },
+        },
+      ]);
     }
   };
 
@@ -81,20 +101,20 @@ export default function App() {
         onChange={(e) => setAge(e.target.value)}
       />
 
-      {/* 🔥 NEW CHAT UI */}
+      {/* CHAT BOX */}
       <div className="w-full max-w-md h-[320px] overflow-y-auto bg-black/40 backdrop-blur-md p-4 rounded-xl border border-purple-500/40 mb-4 z-10 shadow-lg">
 
         {messages.map((msg, i) => (
           <div key={i} className="mb-4">
 
-            {/* USER MESSAGE */}
+            {/* USER */}
             {msg.role === "user" && (
               <div className="bg-gradient-to-r from-purple-600 to-purple-500 text-white px-4 py-2 rounded-lg text-right shadow">
                 {msg.text}
               </div>
             )}
 
-            {/* BOT MESSAGE */}
+            {/* BOT */}
             {msg.role === "bot" && (
               <div className="bg-[#1a1a2e] text-gray-200 p-4 rounded-xl shadow border border-purple-500/20">
 
@@ -148,7 +168,6 @@ export default function App() {
         </button>
       </div>
 
-      {/* DISCLAIMER */}
       <p className="text-xs text-gray-400 mt-4 z-10">
         This is not medical advice.
       </p>
