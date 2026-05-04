@@ -1,0 +1,53 @@
+# 🔐 ENV (VERY IMPORTANT)
+.env
+.env.*
+
+# 🐍 Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+
+# 📦 Virtual environment
+venv/
+env/
+ENV/
+
+# 🧠 VS Code
+.vscode/*
+!.vscode/extensions.json
+
+# 🧾 Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# 🌐 Node / Frontend
+node_modules/
+dist/
+dist-ssr/
+
+# 🧾 OS files
+.DS_Store
+Thumbs.db
+
+# 🧠 IDE
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# 🔥 Build / cache
+build/
+.cache/
+
+# ⚠️ Optional (extra safety)
+*.env
+*.key
